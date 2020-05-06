@@ -1,0 +1,43 @@
+{% if product.images.size > 1 %}
+         
+           
+          <ul class="product-photo-thumbs grid-uniform" id="productThumbs-{{ section.id }}">
+            
+            {% for image in product.images limit: 200 %}
+              <li id="thumb-{{image.id}}" class="grid-item  wide--one-fifth large--one-quarter medium-down--one-half">
+                {% assign grid_item_width = 'large--one-fifth medium--one-third small--one-half' %}
+                <a href="{{ image.src | img_url: '1024x1024', scale: 2 }}" class="product-photo-thumb product-photo-thumb-{{ section.id }}" data-image-id="{{ image.id }}">
+                  <img src="{{ image.src | img_url: '580x' }}" alt="{{ image.alt | escape }}">
+                </a>
+                
+              </li>
+            {% endfor %}
+           {% include 'varies' %}
+          </ul>
+        {% endif %} 
+        
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script>
+	jQuery(document).ready(function($) {
+  window._VARIANTS = {};
+  {% for variant in product.variants %}
+    window._VARIANTS[{{ variant.id }}] = {{ variant.inventory_quantity }}
+	
+	variant = {{ variant | json }};
+	var image = variant.featured_image.id;
+	//console.log(image)
+    var quantity = _VARIANTS[{{ variant.id }}];
+    var imageSet = $('.product-photo-thumbs #thumb-'+image);
+    //console.log({{ variant.id }}+'-'+quantity)
+    //console.log({{ variant.image_id }}+'-'+quantity)
+    
+    
+    	if(quantity < 1 ){
+    	imageSet.remove();
+    	//console.log(imageSet)
+    }
+    	
+   
+  {% endfor %}
+   });
+</script>
